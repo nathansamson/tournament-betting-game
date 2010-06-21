@@ -5,7 +5,9 @@ What Is It?
 ----------
 Its a script to calcute points  for a game to guess tournament results
 (a typical football tournament for example)
+
 Rules are
+
 *	Each player chooses X teams (his equipe)
 *	When a team in a players team plays a match, the player get points
 	according to the result of the team
