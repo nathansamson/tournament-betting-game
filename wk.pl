@@ -1,27 +1,43 @@
-win(X) :- match(_, X, _, P1, P2), P2 > P1.
-win(X) :- match(X, _, _, P1, P2), P1 > P2.
+wins(X) :- match(_, X, _, _, _, P1, P2), P2 > P1.
+wins(X) :- match(X, _, _, _, _, P1, P2), P1 > P2.
 
-loose(X) :- match(_, X, _, P1, P2), P1 > P2.
-loose(X) :- match(X, _, _, P1, P2), P2 > P1.
+loses(X) :- match(_, X, _, _, _, P1, P2), P1 > P2.
+loses(X) :- match(X, _, _, _, _, P1, P2), P2 > P1.
 
-equal(X) :- match(_, X, _, P1, P2), P1 = P2.
-equal(X) :- match(X, _, _, P1, P2), P1 = P2.
+draws(X) :- match(_, X, _, _, _, P, P).
+draws(X) :- match(X, _, _, _, _, P, P).
 
 sum([], 0).
 sum([H|T], S) :- sum(T, ST), S is H + ST.
 
-goals(X, G) :- findall(P1, match(X, _, _, P1, _), Home),
-               findall(P2, match(_, X, _, _, P2), Out),
+goals(X, G) :- findall(P1, match(X, _, _, P1, _, _, _), Home),
+               findall(P2, match(_, X, _, _, P2, _, _), Out),
                sum(Home, SH), sum(Out, SO),
                G is SH + SO.
 
+putstring([]).
+putstring([H|T]) :- put(H), putstring(T).
+
+printlist([]).
+printlist([H|T]) :- putstring(H), put("\n"), printlist(T).
+
+sieve([], _).
+sieve([H|T], L) :- sieve(T, L), member(H, L), !. 
+sieve([H|T], [H|S]) :- sieve(T, S).
+
 points(X, P) :-
-	findall(_, win(X), W),
-        findall(_, loose(X), L),
-        findall(_, equal(X), E),
+	findall(_, wins(X), W),
+        findall(_, loses(X), L),
+        findall(_, draws(X), E),
         length(W, WL), length(L, LL), length(E, EL),
 	goals(X, G),
-        P is WL * 5 + LL + EL * 3 + G.
+	putstring(X), put(" "),
+	write(WL), put(" "),
+	write(LL), put(" "),
+	write(EL), put(" "),
+	write(G), put("="),
+        P is WL * 5 + LL + EL * 3 + G,
+	write(P), put("\n").
 
 equipeHelperPoints([], 0).
 equipeHelperPoints([H|T], P) :- 
